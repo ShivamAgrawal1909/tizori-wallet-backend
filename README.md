@@ -80,6 +80,36 @@ com.ewallet
 └── dto
 
 ---
+## 🏗️ System Architecture
+
+```text
+                    ┌─────────────────┐
+                    │     Client      │
+                    │ Swagger / App   │
+                    └────────┬────────┘
+                             │
+                             ▼
+                    ┌─────────────────┐
+                    │ Spring Boot API │
+                    │ JWT + Security  │
+                    └───────┬─────────┘
+                            │
+         ┌──────────────────┼──────────────────┐
+         │                  │                  │
+         ▼                  ▼                  ▼
+ ┌──────────────┐   ┌──────────────┐   ┌──────────────┐
+ │    MySQL     │   │    Redis     │   │    Kafka     │
+ │ Persistence  │   │ Wallet Cache │   │ Event Queue  │
+ └──────────────┘   └──────────────┘   └──────────────┘
+
+                            │
+                            ▼
+                 ┌────────────────────┐
+                 │ GitHub Actions CI  │
+                 │ Docker Build/Test  │
+                 └────────────────────┘
+```
+
 
 ## 📡 API Modules
 
