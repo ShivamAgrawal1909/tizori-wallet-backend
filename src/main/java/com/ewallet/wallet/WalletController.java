@@ -1,11 +1,13 @@
 package com.ewallet.wallet;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/wallet")
+@SecurityRequirement(name = "bearerAuth")
 public class WalletController {
 
     @Autowired

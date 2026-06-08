@@ -7,11 +7,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class KafkaProducer {
 
+    private static final String TOPIC = "wallet-transactions";
+
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    public void sendMessage(String topic, String message) {
-        kafkaTemplate.send(topic, message);
-        System.out.println("Kafka message sent: " + message);
+    public void sendWalletEvent(String message) {
+
+        kafkaTemplate.send(TOPIC, message);
+
+        System.out.println("Kafka Event Published: " + message);
     }
 }
