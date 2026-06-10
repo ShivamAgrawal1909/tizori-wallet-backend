@@ -46,13 +46,17 @@ services:
       DB_URL: jdbc:mysql://mysql:3306/ewallet
       DB_USERNAME: root
       DB_PASSWORD: root123
-      JWT_SECRET: ThisIsMySuperSecretJwtKeyForDocker2026
-      RAZORPAY_KEY_ID: dummy
-      RAZORPAY_KEY_SECRET: dummy
+
+      JWT_SECRET: ${JWT_SECRET}
+      RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID}
+      RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET}
+
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       KAFKA_AUTO_STARTUP: "false"
+
       REDIS_HOST: redis
       REDIS_PORT: 6379
+
     depends_on:
       mysql:
         condition: service_healthy

@@ -2,6 +2,8 @@ FROM eclipse-temurin:21-jdk-alpine
 
 WORKDIR /app
 
+RUN apk add --no-cache ca-certificates && update-ca-certificates
+
 COPY pom.xml .
 COPY src ./src
 COPY mvnw .
