@@ -71,7 +71,7 @@ public class SecurityConfig {
 
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:*",
-                "http://*:*"
+                "http://10.73.243.29:*"
         ));
 
         config.setAllowedMethods(List.of(
