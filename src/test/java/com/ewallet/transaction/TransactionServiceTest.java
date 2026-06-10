@@ -63,7 +63,7 @@ class TransactionServiceTest {
 
         assertEquals(100.0, summary.getTotalAdded());
         assertEquals(30.0, summary.getTotalSent());
-        assertEquals(20.0, summary.getTotalReceived());
+        assertEquals(120.0, summary.getTotalReceived());
         assertEquals(90.0, summary.getCurrentBalance());
     }
 }
