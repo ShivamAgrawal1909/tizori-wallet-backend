@@ -12,20 +12,19 @@ import java.util.List;
 @SecurityRequirement(name = "bearerAuth")
 public class TransactionController {
 
-
     @Autowired
     private TransactionRepository transactionRepository;
 
     @Autowired
     private TransactionService transactionService;
 
-    // User ke saare transactions
+    // User ke saare transactions with sender/receiver details
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Transaction>> getUserTransactions(
+    public ResponseEntity<List<TransactionResponse>> getUserTransactions(
             @PathVariable Long userId) {
 
         return ResponseEntity.ok(
-                transactionService.getMyTransactions(userId)
+                transactionService.getMyTransactionResponses(userId)
         );
     }
 

@@ -16,15 +16,32 @@ public class UserController {
     private UserService userService;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private JwtUtil jwtUtil;
 
     // Register API
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) {
+    public ResponseEntity<Map<String, Object>> register(@RequestBody User user) {
 
-        User savedUser = userService.registerUser(user);
+        Map<String, Object> response = new HashMap<>();
 
-        return ResponseEntity.ok(savedUser);
+        try {
+            User savedUser = userService.registerUser(user);
+
+            response.put("message", "User registered successfully");
+            response.put("userId", savedUser.getId());
+            response.put("name", savedUser.getName());
+            response.put("email", savedUser.getEmail());
+            response.put("role", savedUser.getRole());
+
+            return ResponseEntity.ok(response);
+
+        } catch (RuntimeException e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     // Login Request
@@ -59,7 +76,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    // Get User
+    // Get User by ID
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(
             @PathVariable Long id) {
@@ -67,5 +84,23 @@ public class UserController {
         User user = userService.getUserById(id);
 
         return ResponseEntity.ok(user);
+    }
+
+    // Get User by Email for transfer lookup
+    @GetMapping("/by-email")
+    public ResponseEntity<Map<String, Object>> getUserByEmail(
+            @RequestParam String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Receiver account not found!"));
+
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("userId", user.getId());
+        response.put("name", user.getName());
+        response.put("email", user.getEmail());
+        response.put("role", user.getRole());
+
+        return ResponseEntity.ok(response);
     }
 }

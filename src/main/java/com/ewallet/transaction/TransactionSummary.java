@@ -9,4 +9,5 @@ public class TransactionSummary {
     private Double totalAdded;
     private Double totalSent;
     private Double totalReceived;
+    private Long totalTransactions;
 }

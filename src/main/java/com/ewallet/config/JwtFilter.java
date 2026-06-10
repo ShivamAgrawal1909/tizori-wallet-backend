@@ -29,43 +29,35 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
 
-        System.out.println("=================================");
-        System.out.println("REQUEST PATH = " + path);
+        if (path.equals("/api/users/login")
+                || path.equals("/api/users/register")
+                || request.getMethod().equalsIgnoreCase("OPTIONS")) {
 
-        // Swagger endpoints bypass
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if (path.startsWith("/swagger-ui")
                 || path.startsWith("/v3/api-docs")
                 || path.startsWith("/swagger-resources")
                 || path.startsWith("/webjars")) {
 
-            System.out.println("SWAGGER REQUEST BYPASSED");
             filterChain.doFilter(request, response);
             return;
         }
 
         String authHeader = request.getHeader("Authorization");
 
-        System.out.println("JWT HEADER = " + authHeader);
-
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
             String token = authHeader.substring(7);
 
-            System.out.println("TOKEN = " + token);
-
             try {
-
                 boolean valid = jwtUtil.validateToken(token);
 
-                System.out.println("TOKEN VALID = " + valid);
-
                 if (valid) {
-
                     String email = jwtUtil.extractEmail(token);
                     String role = jwtUtil.extractRole(token);
-
-                    System.out.println("EMAIL = " + email);
-                    System.out.println("ROLE = " + role);
 
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(
@@ -81,16 +73,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
                     SecurityContextHolder.getContext()
                             .setAuthentication(authentication);
-
-                    System.out.println("AUTHENTICATION SET SUCCESSFULLY");
                 }
 
-            } catch (Exception e) {
-                System.out.println("JWT ERROR = " + e.getMessage());
-                e.printStackTrace();
+            } catch (Exception ignored) {
+                SecurityContextHolder.clearContext();
             }
-        } else {
-            System.out.println("NO AUTHORIZATION HEADER FOUND");
         }
 
         filterChain.doFilter(request, response);
