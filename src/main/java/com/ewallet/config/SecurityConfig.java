@@ -68,10 +68,10 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration config = new CorsConfiguration();
-
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:*",
-                "http://10.73.243.29:*"
+                "http://10.73.243.29:*",
+                "https://tizori-wallet-frontend.onrender.com"
         ));
 
         config.setAllowedMethods(List.of(
