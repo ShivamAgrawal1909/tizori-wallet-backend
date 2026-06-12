@@ -1,4 +1,5 @@
 package com.ewallet.user;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,7 +16,8 @@ public class UserService {
     @Autowired
     private WalletService walletService;
 
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // Register new user
     public User registerUser(User user) {
