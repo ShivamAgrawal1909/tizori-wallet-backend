@@ -99,44 +99,16 @@ public class TransactionService {
         return response;
     }
 
-    // Dashboard summary
+    // FAST & OPTIMIZED: Dashboard summary using database-level aggregations
     public TransactionSummary getSummary(Long userId) {
 
         TransactionSummary summary = new TransactionSummary();
 
-        double totalAdded = transactionRepository.findAll()
-                .stream()
-                .filter(t ->
-                        "ADD_MONEY".equals(t.getType())
-                                && userId.equals(t.getToUserId()))
-                .mapToDouble(Transaction::getAmount)
-                .sum();
-
-        double totalSent = transactionRepository.findAll()
-                .stream()
-                .filter(t ->
-                        "TRANSFER".equals(t.getType())
-                                && userId.equals(t.getFromUserId()))
-                .mapToDouble(Transaction::getAmount)
-                .sum();
-
-        double totalReceived = transactionRepository.findAll()
-                .stream()
-                .filter(t ->
-                        userId.equals(t.getToUserId())
-                                && (
-                                "TRANSFER".equals(t.getType())
-                                        || "ADD_MONEY".equals(t.getType())
-                        ))
-                .mapToDouble(Transaction::getAmount)
-                .sum();
-
-        long totalTransactions = transactionRepository.findAll()
-                .stream()
-                .filter(t ->
-                        userId.equals(t.getFromUserId())
-                                || userId.equals(t.getToUserId()))
-                .count();
+        // 1. Database se seedhe calculation ho rhi hai (Memory load nahi hogi)
+        double totalAdded = transactionRepository.sumTotalAddedByUserId(userId);
+        double totalSent = transactionRepository.sumTotalSentByUserId(userId);
+        double totalReceived = transactionRepository.sumTotalReceivedByUserId(userId);
+        long totalTransactions = transactionRepository.countTotalTransactionsByUserId(userId);
 
         double currentBalance = walletRepository
                 .findByUserId(userId)
