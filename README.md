@@ -1,89 +1,53 @@
-# E-Wallet Platform 💳
+Tizori Wallet — Backend 💳
+A production-grade Spring Boot digital wallet backend with JWT authentication, Redis caching, Apache Kafka event streaming, Docker containerization, and GitHub Actions CI/CD.
 
-A production-style Digital Wallet Backend built using Spring Boot, JWT Authentication, Redis Caching, Apache Kafka, Docker, and GitHub Actions CI/CD.
+Note: This project is built for learning, portfolio, and demonstration purposes.
 
-## 🚀 Tech Stack
 
-* Java 21
-* Spring Boot 3.5
-* Spring Security
-* JWT Authentication
-* Spring Data JPA
-* MySQL 8
-* Redis
-* Apache Kafka
-* Swagger / OpenAPI
-* Docker & Docker Compose
-* GitHub Actions CI/CD
-* Maven
-* JUnit 5 & Mockito
+Table of contents
 
----
+Features
+Tech stack
+Project structure
+System architecture
+Prerequisites
+Run with Docker
+API reference
+Swagger documentation
+Testing
+CI/CD pipeline
+Security
+Future enhancements
 
-## ✨ Features
 
-### Authentication & Security
+Features
+AreaCapabilitiesAuthenticationUser registration and login. BCrypt password hashing. JWT token issuance and validation. Role-based access control (RBAC).WalletCreate wallet per user. Check balance. Add money. Transfer money between wallets. Redis-backed wallet cache for fast reads.TransactionsFull transaction history per user. Transaction summary with totals. Kafka event publishing on every wallet operation.AdminView all users. View all transactions. Dashboard analytics with platform-wide metrics.InfrastructureFully Dockerized with Docker Compose. GitHub Actions pipeline for build, test, and Docker Hub push. Swagger / OpenAPI documentation.
 
-* User Registration
-* User Login
-* BCrypt Password Encryption
-* JWT Authentication
-* Role-Based Access Control (RBAC)
-* Protected APIs
+Tech stack
 
-### Wallet Management
+Backend: Java 21, Spring Boot 3.5, Spring Security, Spring Data JPA
+Authentication: JWT (jjwt 0.12), BCrypt
+Database: MySQL 8
+Cache: Redis
+Messaging: Apache Kafka
+API docs: Swagger / OpenAPI (springdoc)
+Build: Maven
+Containerization: Docker, Docker Compose
+CI/CD: GitHub Actions
+Testing: JUnit 5, Mockito
 
-* Create Wallet
-* Check Balance
-* Add Money
-* Transfer Money
-* Redis Wallet Cache
 
-### Transactions
+Project structure
+textcom.ewallet
+├── admin          # Admin controllers and services
+├── config         # Security, JWT, Redis, Kafka, CORS config
+├── dto            # Request and response DTOs
+├── transaction    # Transaction entity, repository, service, controller
+├── user           # User entity, repository, service, controller
+└── wallet         # Wallet entity, repository, service, controller
 
-* Transaction History
-* Transaction Summary
-* Kafka Event Publishing
-
-### Admin Module
-
-* View All Users
-* View All Transactions
-* Dashboard Analytics
-
-### Infrastructure
-
-* Dockerized Application
-* Redis Integration
-* Kafka Integration
-* GitHub Actions CI/CD Pipeline
-* Swagger API Documentation
-
----
-
-## 📂 Project Structure
-
-com.ewallet
-
-├── admin
-
-├── config
-
-├── redis
-
-├── transaction
-
-├── user
-
-├── wallet
-
-└── dto
-
----
-## 🏗️ System Architecture
-
-```text
-                    ┌─────────────────┐
+System architecture
+text                    ┌─────────────────┐
                     │     Client      │
                     │ Swagger / App   │
                     └────────┬────────┘
@@ -101,112 +65,88 @@ com.ewallet
  │    MySQL     │   │    Redis     │   │    Kafka     │
  │ Persistence  │   │ Wallet Cache │   │ Event Queue  │
  └──────────────┘   └──────────────┘   └──────────────┘
-
                             │
                             ▼
                  ┌────────────────────┐
                  │ GitHub Actions CI  │
-                 │ Docker Build/Test  │
+                 │ Docker Build/Push  │
                  └────────────────────┘
-```
+
+Prerequisites
+
+Java 21+
+Maven 3.9+
+Docker and Docker Compose
 
 
-## 📡 API Modules
-
-### User APIs
-
-* POST /api/users/register
-* POST /api/users/login
-* GET /api/users/{id}
-
-### Wallet APIs
-
-* POST /api/wallet/create/{userId}
-* GET /api/wallet/balance/{userId}
-* POST /api/wallet/add/{userId}
-* POST /api/wallet/transfer
-
-### Transaction APIs
-
-* GET /api/transactions/user/{userId}
-* GET /api/transactions/summary/{userId}
-* GET /api/transactions/all
-
-### Admin APIs
-
-* GET /api/admin/users
-* GET /api/admin/transactions
-* GET /api/admin/dashboard
-
----
-
-## 🐳 Run with Docker
-
-```bash
+Run with Docker
+Clone the repository and start all services with a single command:
+bashgit clone https://github.com/ShivamAgrawal1909/Ewallet.git
+cd Ewallet
 docker-compose up --build
-```
+Services started:
+ServicePortSpring Boot API8080MySQL3306Redis6379Kafka9092
 
-Services:
+API reference
+User
+MethodEndpointDescriptionPOST/api/users/registerRegister a new userPOST/api/users/loginLogin and receive JWT tokenGET/api/users/{id}Get user by ID
+Wallet
+MethodEndpointDescriptionPOST/api/wallet/create/{userId}Create wallet for userGET/api/wallet/balance/{userId}Get wallet balancePOST/api/wallet/add/{userId}Add money to walletPOST/api/wallet/transferTransfer money between wallets
+Transactions
+MethodEndpointDescriptionGET/api/transactions/user/{userId}Transaction historyGET/api/transactions/summary/{userId}Transaction summaryGET/api/transactions/allAll transactions (admin)
+Admin
+MethodEndpointDescriptionGET/api/admin/usersAll usersGET/api/admin/transactionsAll transactionsGET/api/admin/dashboardPlatform metrics
 
-* Spring Boot → 8080
-* MySQL → 3306
-* Redis → 6379
-* Kafka → 9092
-
----
-
-## 📖 Swagger Documentation
-
-Open:
-
+Swagger documentation
+Once the application is running, open:
 http://localhost:8080/swagger-ui/index.html
+All endpoints are documented with request/response schemas.
 
----
+Testing
+bashmvn clean test
+Test coverage includes:
 
-## 🧪 Testing
+JUnit 5 unit tests
+Mockito mocks for service layer
+UserService and UserController tests
 
-```bash
-mvn clean test
-```
 
-Includes:
+CI/CD pipeline
+GitHub Actions automatically triggers on every push:
 
-* JUnit 5
-* Mockito
-* Service Tests
-* Controller Tests
+Builds the project with Maven
+Runs all tests
+Builds the Docker image
+Pushes the image to Docker Hub (shivamagr/ewallet-app)
 
----
 
-## 🔄 CI/CD
+Security
 
-GitHub Actions pipeline automatically:
+Passwords hashed with BCrypt
+Stateless JWT authentication on every protected request
+RBAC — admin and user roles enforced at the controller level
+Secrets managed via environment variables — never hardcoded
 
-* Builds the project
-* Runs tests
-* Builds Docker image
-* Pushes Docker image to Docker Hub
 
----
+ Future enhancements
 
-## 🔒 Security
+- Email notifications on transactions
+- Refresh token support
+- Monitoring and logging (Actuator, ELK)
+- Rate limiting
+- Pagination for transaction history
+- UPI payment integration
+- Bank account linking and withdrawals
+- Net banking support
+- Transaction receipts via email/SMS
 
-* BCrypt Password Hashing
-* JWT Authentication
-* RBAC Authorization
-* Environment-based Secret Management
 
----
-
-## 🚧 Future Enhancements
-
-* Razorpay Integration
-* Email Notifications
-* Refresh Tokens
-* Monitoring & Logging
-
----
-
-## 👨‍💻 Author
-
+Author
 Shivam Agrawal
+
+GitHub: ShivamAgrawal1909
+
+License
+This project is created for learning, portfolio, and demonstration purposes.
+
+Licensed under the MIT License.
