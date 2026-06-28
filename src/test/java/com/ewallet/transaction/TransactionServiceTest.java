@@ -7,10 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -29,41 +26,36 @@ class TransactionServiceTest {
     @Test
     void getSummary_ShouldReturnCorrectData() {
 
-        Transaction addMoney = new Transaction();
-        addMoney.setType("ADD_MONEY");
-        addMoney.setToUserId(1L);
-        addMoney.setAmount(100.0);
+        Long userId = 1L;
 
-        Transaction transferSent = new Transaction();
-        transferSent.setType("TRANSFER");
-        transferSent.setFromUserId(1L);
-        transferSent.setAmount(30.0);
+        
+        when(transactionRepository.sumTotalAddedByUserId(userId))
+                .thenReturn(100.0);
 
-        Transaction transferReceived = new Transaction();
-        transferReceived.setType("TRANSFER");
-        transferReceived.setToUserId(1L);
-        transferReceived.setAmount(20.0);
+        when(transactionRepository.sumTotalSentByUserId(userId))
+                .thenReturn(30.0);
 
-        when(transactionRepository.findAll())
-                .thenReturn(List.of(
-                        addMoney,
-                        transferSent,
-                        transferReceived
-                ));
+        when(transactionRepository.sumTotalReceivedByUserId(userId))
+                .thenReturn(20.0);
+
+        when(transactionRepository.countTotalTransactionsByUserId(userId))
+                .thenReturn(3L);
 
         Wallet wallet = new Wallet();
-        wallet.setUserId(1L);
+        wallet.setUserId(userId);
         wallet.setBalance(90.0);
 
-        when(walletRepository.findByUserId(1L))
+        when(walletRepository.findByUserId(userId))
                 .thenReturn(Optional.of(wallet));
 
-        TransactionSummary summary =
-                transactionService.getSummary(1L);
+    
+        TransactionSummary summary = transactionService.getSummary(userId);
 
+        
         assertEquals(100.0, summary.getTotalAdded());
-        assertEquals(30.0, summary.getTotalSent());
-        assertEquals(120.0, summary.getTotalReceived());
-        assertEquals(90.0, summary.getCurrentBalance());
+        assertEquals(30.0,  summary.getTotalSent());
+        assertEquals(20.0,  summary.getTotalReceived());
+        assertEquals(3L,    summary.getTotalTransactions());
+        assertEquals(90.0,  summary.getCurrentBalance());
     }
 }
